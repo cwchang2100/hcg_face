@@ -1,0 +1,25 @@
+CUR_PATH=`pwd`
+echo ${CUR_PATH}
+if [ -z $1 ];then
+    make clean;make
+else
+    make clean;make BOARD=$1
+fi
+if [ "$?" != "0" ];then
+exit
+fi
+cd ${ZEUS_SDK_HOME}/tools/fwpacker
+cp ${CUR_PATH}/build/zeus_demo.elf.bin ./data/demo.bin
+if [ "$?" != "0" ];then
+exit
+fi
+rm flash.nbf
+./fwpacker demo.ini
+if [ "$?" != "0" ];then
+exit
+fi
+cp flash.nbf ../script
+cp flash.nbf ${CUR_PATH}
+cd ${ZEUS_SDK_HOME}/tools/script/
+source ${ZEUS_SDK_HOME}/tools/script/intf.sh cha i2c
+./hflash
